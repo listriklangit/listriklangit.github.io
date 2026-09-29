@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PT Listrik Langit — Peta Portofolio PLTS Indonesia</title>
+  <meta name="description" content="Portofolio PLTS PT Listrik Langit: peta interaktif instalasi panel surya On-Grid, Off-Grid, Hybrid di seluruh Indonesia. Klik titik untuk foto, video, kapasitas, dan review." />
+  <meta property="og:title" content="PT Listrik Langit — Peta PLTS Indonesia" />
+  <meta property="og:description" content="Jelajahi titik PLTS kami di seluruh Indonesia: foto, video, kapasitas kWp, dan testimoni pelanggan." />
+  <meta property="og:type" content="website" />
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+  <link rel="stylesheet" href="./css/style.css" />
+</head>
+<body class="bg-slate-50 text-slate-900">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-[1000] bg-white/90 backdrop-blur border-b">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
+      <a href="#beranda" class="flex items-center gap-2">
+        <img src="./logo.svg" alt="PT Listrik Langit" class="h-9 w-auto" />
+        <span class="font-extrabold tracking-tight">Listrik Langit <span class="block text-[11px] font-medium text-slate-500">PLTS Indonesia</span></span>
+      </a>
+      <nav class="hidden md:flex items-center gap-5 text-sm font-semibold">
+        <a href="#beranda" class="hover:text-amber-600">Beranda</a>
+        <a href="#peta" class="hover:text-amber-600">Peta</a>
+        <a href="#statistik" class="hover:text-amber-600">Statistik</a>
+        <a href="#tentang" class="hover:text-amber-600">Tentang</a>
+        <a href="#kontak" class="hover:text-amber-600">Kontak</a>
+      </nav>
+      <div class="flex items-center gap-2">
+        <a href="https://wa.me/6281234567890" target="_blank" rel="noopener" class="hidden sm:inline-block text-sm font-bold bg-amber-500 hover:bg-amber-600 text-white px-3 py-2 rounded-lg">Hubungi WA</a>
+        <a href="./admin.html" class="text-sm font-bold border px-3 py-2 rounded-lg hover:bg-slate-100">Admin</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section id="beranda" class="bg-gradient-to-b from-slate-900 to-slate-800 text-white">
+    <div class="max-w-7xl mx-auto px-4 py-10 md:py-14">
+      <h1 class="text-2xl md:text-4xl font-extrabold leading-tight">Peta Portofolio PLTS <span class="text-amber-400">PT Listrik Langit</span></h1>
+      <p class="mt-2 text-slate-300 max-w-2xl text-sm md:text-base">Klik titik di peta untuk melihat foto, video, kapasitas (kWp), tahun pemasangan, tipe sistem, dan review pelanggan.</p>
+      <div id="statistik" class="mt-6 grid grid-cols-3 gap-3 max-w-2xl">
+        <div class="bg-white/10 rounded-xl p-3 md:p-4">
+          <div id="stat-titik" class="text-xl md:text-3xl font-extrabold text-amber-400">–</div>
+          <div class="text-[11px] md:text-sm text-slate-300">Total titik</div>
+        </div>
+        <div class="bg-white/10 rounded-xl p-3 md:p-4">
+          <div id="stat-kwp" class="text-xl md:text-3xl font-extrabold text-amber-400">–</div>
+          <div class="text-[11px] md:text-sm text-slate-300">Total kWp</div>
+        </div>
+        <div class="bg-white/10 rounded-xl p-3 md:p-4">
+          <div id="stat-prov" class="text-xl md:text-3xl font-extrabold text-amber-400">–</div>
+          <div class="text-[11px] md:text-sm text-slate-300">Provinsi</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Peta + filter + list -->
+  <main id="peta" class="max-w-7xl mx-auto px-4 py-6">
+    <div id="supabase-warning" class="hidden mb-4 text-sm bg-amber-50 border border-amber-200 text-amber-800 rounded-lg p-3"></div>
+
+    <!-- Filter bar -->
+    <div class="bg-white rounded-xl border p-3 md:p-4 mb-4 grid gap-2 md:grid-cols-6">
+      <input id="f-search" type="search" placeholder="Cari nama / klien / kota…" class="md:col-span-2 border rounded-lg px-3 py-2 text-sm" />
+      <select id="f-prov" class="border rounded-lg px-3 py-2 text-sm"><option value="">Semua provinsi</option></select>
+      <select id="f-tipe" class="border rounded-lg px-3 py-2 text-sm">
+        <option value="">Semua tipe</option>
+        <option>On-Grid</option><option>Off-Grid</option><option>Hybrid</option>
+      </select>
+      <select id="f-tahun" class="border rounded-lg px-3 py-2 text-sm"><option value="">Semua tahun</option></select>
+      <div class="flex gap-2">
+        <input id="f-min" type="number" min="0" placeholder="Min kWp" class="w-1/2 border rounded-lg px-3 py-2 text-sm" />
+        <input id="f-max" type="number" min="0" placeholder="Max kWp" class="w-1/2 border rounded-lg px-3 py-2 text-sm" />
+      </div>
+    </div>
+    <p class="text-xs text-slate-500 mb-2"><span id="result-count">0</span> lokasi ditampilkan. <button id="btn-reset-view" class="underline font-semibold">Reset view Indonesia</button></p>
+
+    <div class="grid lg:grid-cols-3 gap-4">
+      <div class="lg:col-span-2">
+        <div id="map" class="w-full h-[60vh] md:h-[70vh] rounded-xl border overflow-hidden"></div>
+        <p class="text-[11px] text-slate-500 mt-1">Peta: © OpenStreetMap, © CARTO. Geser dibatasi wilayah Indonesia.</p>
+      </div>
+      <div>
+        <div id="cards" class="grid sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-3 max-h-[60vh] md:max-h-[70vh] overflow-auto pr-1"></div>
+      </div>
+    </div>
+
+    <!-- Tentang -->
+    <section id="tentang" class="mt-10 bg-white rounded-xl border p-5 md:p-8">
+      <h2 class="text-lg md:text-2xl font-extrabold">Tentang PT Listrik Langit</h2>
+      <p class="mt-2 text-sm md:text-base text-slate-600">Kami merancang, memasang, dan merawat Pembangkit Listrik Tenaga Surya (PLTS) atap dan ground-mounted untuk rumah, bisnis, dan fasilitas publik di seluruh Indonesia — On-Grid, Off-Grid, dan Hybrid. Setiap titik di peta adalah instalasi nyata yang bisa diverifikasi.</p>
+      <ul class="mt-3 text-sm text-slate-600 list-disc pl-5">
+        <li>Survei + desain sistem gratis (Jawa & Bali).</li>
+        <li>Video dokumentasi tiap proyek besar via YouTube.</li>
+        <li>Garansi instalasi + monitoring performa.</li>
+      </ul>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer id="kontak" class="mt-10 bg-slate-900 text-slate-300">
+    <div class="max-w-7xl mx-auto px-4 py-8 grid md:grid-cols-3 gap-6 text-sm">
+      <div>
+        <div class="font-extrabold text-white">PT Listrik Langit</div>
+        <p class="mt-1">Jl. Tenaga Surya No. 10, Malang, Jawa Timur</p>
+        <p>info@listriklangit.id • +62 812-3456-7890</p>
+      </div>
+      <div>
+        <div class="font-extrabold text-white">Media sosial</div>
+        <p class="mt-1"><a class="underline" href="#">Instagram</a> • <a class="underline" href="#">YouTube</a> • <a class="underline" href="#">TikTok</a></p>
+      </div>
+      <div>
+        <div class="font-extrabold text-white">Bagikan</div>
+        <p class="mt-1">Setiap lokasi bisa di-share via link <code>#lokasi=&lt;slug&gt;</code> (otomatis saat modal dibuka).</p>
+        <a href="./admin.html" class="underline">Login admin</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Modal detail -->
+  <div id="detail-modal" class="hidden fixed inset-0 z-[2000] bg-black/60 overflow-y-auto">
+    <div class="min-h-full flex items-start md:items-center justify-center p-3 md:p-6">
+      <div class="bg-white w-full max-w-3xl rounded-2xl overflow-hidden">
+        <div class="flex items-start justify-between p-4 border-b">
+          <div>
+            <h3 id="m-name" class="font-extrabold text-base md:text-xl"></h3>
+            <p id="m-sub" class="text-xs md:text-sm text-slate-500"></p>
+          </div>
+          <button id="m-close" class="ml-3 border rounded-lg px-3 py-1.5 font-bold hover:bg-slate-100">✕</button>
+        </div>
+        <div class="p-4 grid md:grid-cols-2 gap-4">
+          <div>
+            <img id="m-photo" class="slider-img" alt="Foto PLTS" />
+            <div class="flex items-center gap-2 mt-2">
+              <button id="m-prev" class="border rounded-lg px-3 py-1 font-bold">‹</button>
+              <div id="m-dots" class="flex gap-1.5"></div>
+              <button id="m-next" class="border rounded-lg px-3 py-1 font-bold">›</button>
+            </div>
+            <div id="m-video-wrap" class="mt-3 hidden">
+              <div class="text-sm font-bold mb-1">Video dokumentasi</div>
+              <div class="aspect-video rounded-xl overflow-hidden bg-black"><iframe id="m-video" class="w-full h-full" src="" title="Video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
+            </div>
+          </div>
+          <div class="text-sm">
+            <div id="m-badges" class="flex flex-wrap gap-1.5"></div>
+            <dl class="mt-3 grid grid-cols-2 gap-2">
+              <div class="bg-slate-50 rounded-lg p-2"><dt class="text-[11px] text-slate-500">Kapasitas</dt><dd id="m-kwp" class="font-extrabold"></dd></div>
+              <div class="bg-slate-50 rounded-lg p-2"><dt class="text-[11px] text-slate-500">Tipe</dt><dd id="m-tipe" class="font-bold"></dd></div>
+              <div class="bg-slate-50 rounded-lg p-2"><dt class="text-[11px] text-slate-500">Tahun</dt><dd id="m-tahun" class="font-bold"></dd></div>
+              <div class="bg-slate-50 rounded-lg p-2"><dt class="text-[11px] text-slate-500">Klien</dt><dd id="m-klien" class="font-bold"></dd></div>
+            </dl>
+            <p id="m-desc" class="mt-3 text-slate-600"></p>
+            <p id="m-coord" class="mt-2 text-[12px] text-slate-500"></p>
+            <div class="mt-2 flex gap-2">
+              <a id="m-route" href="#" target="_blank" rel="noopener" class="text-xs font-bold bg-slate-900 text-white px-3 py-2 rounded-lg">Rute (Google Maps)</a>
+              <button id="m-share" class="text-xs font-bold border px-3 py-2 rounded-lg">Salin link</button>
+            </div>
+            <hr class="my-4" />
+            <div class="font-extrabold">Review pelanggan</div>
+            <div id="m-reviews" class="mt-2 space-y-2 max-h-48 overflow-auto"></div>
+            <form id="review-form" class="mt-3 space-y-2 bg-slate-50 rounded-xl p-3">
+              <div class="text-xs font-bold">Tulis review (menunggu moderasi admin)</div>
+              <input id="r-name" required maxlength="60" placeholder="Nama Anda" class="w-full border rounded-lg px-3 py-2 text-sm bg-white" />
+              <select id="r-rating" class="w-full border rounded-lg px-3 py-2 text-sm bg-white">
+                <option value="5">★★★★★ (5)</option><option value="4">★★★★ (4)</option>
+                <option value="3">★★★ (3)</option><option value="2">★★ (2)</option><option value="1">★ (1)</option>
+              </select>
+              <textarea id="r-msg" required maxlength="1000" rows="3" placeholder="Ceritakan pengalaman Anda…" class="w-full border rounded-lg px-3 py-2 text-sm bg-white"></textarea>
+              <button class="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-lg px-3 py-2 text-sm">Kirim review</button>
+              <p id="r-status" class="text-xs text-slate-500"></p>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+  <script src="./js/config.js"></script>
+  <script src="./js/fallback-data.js"></script>
+  <script type="module" src="./js/app.js"></script>
+</body>
+</html>

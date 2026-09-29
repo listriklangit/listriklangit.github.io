@@ -1,0 +1,71 @@
+/* docs/css/style.css — custom di luar Tailwind CDN */
+:root {
+  --brand: #f59e0b;
+  --brand-dark: #b45309;
+  --ink: #0f172a;
+}
+
+html { scroll-behavior: smooth; }
+body { font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+
+/* Map */
+#map { z-index: 0; }
+.leaflet-container { font-family: inherit; }
+
+/* Logo overlay di atas peta (kiri atas) */
+.map-logo-control {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(0,0,0,.18);
+  padding: 6px 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid rgba(0,0,0,.06);
+}
+.map-logo-control img { height: 34px; width: auto; display: block; }
+.map-logo-control span { font-weight: 800; font-size: 12px; color: var(--ink); line-height: 1.1; }
+.map-logo-control small { display: block; font-weight: 500; color: #64748b; font-size: 10px; }
+@media (min-width: 640px) {
+  .map-logo-control img { height: 40px; }
+  .map-logo-control span { font-size: 13px; }
+}
+
+/* Popup Leaflet */
+.leaflet-popup-content { margin: 10px 12px; line-height: 1.4; }
+.leaflet-popup-content img { border-radius: 8px; }
+.popup-btn {
+  display: inline-block; margin-top: 8px; background: var(--ink); color: #fff;
+  font-size: 12px; font-weight: 700; padding: 6px 10px; border-radius: 8px;
+}
+.popup-btn:hover { background: #1e293b; }
+
+/* Modal */
+#detail-modal { backdrop-filter: blur(2px); }
+#detail-modal.hidden { display: none; }
+.slider-img { aspect-ratio: 16/9; object-fit: cover; width: 100%; border-radius: 12px; background: #e2e8f0; }
+.dot { width: 8px; height: 8px; border-radius: 9999px; background: #cbd5e1; }
+.dot.active { background: var(--ink); }
+
+/* Badge tipe */
+.badge { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 9999px; }
+.badge-On-Grid { background: #dcfce7; color: #166534; }
+.badge-Off-Grid { background: #fef3c7; color: #92400e; }
+.badge-Hybrid { background: #dbeafe; color: #1e40af; }
+
+/* Marker cluster */
+.marker-cluster-small, .marker-cluster-medium, .marker-cluster-large { background-color: rgba(245,158,11,.25); }
+.marker-cluster-small div, .marker-cluster-medium div, .marker-cluster-large div {
+  background-color: rgba(245,158,11,.9); color: #fff; font-weight: 800;
+}
+
+/* Card hover */
+.loc-card { transition: transform .15s ease, box-shadow .15s ease; }
+.loc-card:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(0,0,0,.12); }
+
+/* Admin */
+#admin-map, #picker-map { z-index: 0; }
+input, select, textarea { outline: none; }
+input:focus, select:focus, textarea:focus { border-color: var(--brand) !important; box-shadow: 0 0 0 3px rgba(245,158,11,.25); }
+.tab-btn.active { background: var(--ink); color: #fff; }
