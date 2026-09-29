@@ -2,9 +2,9 @@
 // Isi setelah buat project di https://supabase.com
 // Dashboard > Project Settings > API > copy URL + anon public key.
 // PENTING: hanya pakai ANON key di frontend. Jangan pernah taruh service_role key di sini.
-const SUPABASE_URL = "https://xyzcompany.supabase.co";
-const SUPABASE_ANON_KEY = "PASTE_ANON_KEY_ANDA_DI_SINI";
+const SUPABASE_URL = "https://fzkibfevnxsojlohqpez.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_2-guCXWttUsnXInyCQNf3g_JpV6gkuL";
 
 // Fallback data lokal: dipakai otomatis jika config masih placeholder / Supabase belum siap / offline.
 // Biar peta tetap bisa didemo sebelum backend dikonfigurasi.
-const USE_LOCAL_FALLBACK = true;
+const USE_LOCAL_FALLBACK = false;

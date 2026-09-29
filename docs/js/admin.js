@@ -45,7 +45,7 @@ let picker = null, pickerMarker = null;
 function initPicker() {
   if (picker) return;
   picker = L.map("picker-map").setView([-2.5, 118], 5);
-  L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", { maxZoom: 19 }).addTo(picker);
+  L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: "&copy; OpenStreetMap contributors" }).addTo(picker);
   picker.on("click", (e) => {
     document.getElementById("loc-lat").value = e.latlng.lat.toFixed(6);
     document.getElementById("loc-lng").value = e.latlng.lng.toFixed(6);

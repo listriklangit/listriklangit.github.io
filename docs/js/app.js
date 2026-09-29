@@ -13,9 +13,13 @@ const map = L.map("map", {
   maxBounds: BOUNDS, maxBoundsViscosity: 1.0, worldCopyJump: false,
 }).setView(INDONESIA.center, INDONESIA.zoom);
 L.control.zoom({ position: "bottomright" }).addTo(map);
-L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", {
-  maxZoom: 20, attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>',
+const osm = L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+  maxZoom: 19, attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
 }).addTo(map);
+const satellite = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
+  maxZoom: 19, attribution: "Tiles &copy; Esri &mdash; Source: Esri, Maxar, Earthstar Geographics",
+});
+L.control.layers({ "Peta": osm, "Satelit": satellite }, null, { position: "topright" }).addTo(map);
 
 // Logo overlay kiri atas → klik reset view Indonesia
 const LogoControl = L.Control.extend({
